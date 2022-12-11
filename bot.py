@@ -47,21 +47,20 @@ class Record:
         self.birthday = None
 
     def add_phone(self, new_phone):
-        if not Phone.is_phone_valid(new_phone):
+        adding_phone = Phone(new_phone)
+        if adding_phone.valid:
+            self.phones.append(adding_phone)
+        else:
             print('not valid phone')
             return
-        adding_phone = Phone()
-        adding_phone.value = new_phone
-        self.phones.append(adding_phone)
 
     def change_phone(self, old_phone, new_phone):
-        if not Phone.is_phone_valid(new_phone):
+        if not Phone(new_phone).valid:
             print('not valid phone')
             return
         for phone in self.phones:
             if phone.value == old_phone:
-                changing = Phone()
-                changing.value = new_phone
+                changing = Phone(new_phone)
                 self.phones.append(changing)
                 self.phones.remove(phone)
             else:
@@ -78,8 +77,7 @@ class Record:
         if not Birthday.is_birthday_valid(birthday):
             print('not valid birthday, enter "year.month.day')
             return
-        birthding = Birthday()
-        birthding.value = birthday
+        birthding = Birthday(birthday)
         self.birthday = birthding
 
     def days_to_birthday(self):
@@ -100,8 +98,9 @@ class Record:
 
 
 class Field:
-    def __init__(self):
+    def __init__(self, value):
         self._value = None
+        self.value = value
 
     @property
     def value(self):
@@ -110,22 +109,14 @@ class Field:
     @value.setter
     def value(self, value):
         self._value = value
+        self.valid = 10 <= len(value) <= 12
 
 
 class Name(Field):
-    def __init__(self, name):
-        self.value = name
+    pass
 
 
 class Phone(Field):
-    @Field.value.setter
-    def value(self, phone):
-        self._value = phone
-
-    @classmethod
-    def is_phone_valid(cls, value):
-        return 10 <= len(value) <= 12
-
     def __repr__(self):
         return self._value
 
